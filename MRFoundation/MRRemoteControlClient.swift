@@ -9,6 +9,8 @@
 import Foundation
 import CocoaAsyncSocket
 
+// TODO: Consider about handling disconnection/error
+
 // MARK: - Client Delegate Protocol
 
 @objc public protocol MRRemoteControlClientDelegate {

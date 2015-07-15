@@ -9,6 +9,8 @@
 import Foundation
 import CocoaAsyncSocket
 
+// TODO: Consider about handling disconnection/error
+
 #if TARGET_OS_IPHONE
 import UIKit
 #endif
@@ -18,6 +20,9 @@ enum PacketTag: Int {
     case Body = 2
 }
 
+// MARK: - Server Delegate Protocol
+
+// TODO: Complete this protocol
 @objc public protocol MRRemoteControlServerDelegate {
     @objc optional func remoteControlServerDidReceiveEvent(event: MREvent)
 }
