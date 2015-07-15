@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <Group
+      location = "group:MRFoundation"
+      name = "MRFoundation">
+      <FileRef
+         location = "group:Array+removeObject.swift">
+      </FileRef>
+      <FileRef
+         location = "group:MREvent.swift">
+      </FileRef>
+      <FileRef
+         location = "group:MRRemoteControlClient.swift">
+      </FileRef>
+      <FileRef
+         location = "group:MRRemoteControlServer.swift">
+      </FileRef>
+   </Group>
+   <FileRef
+      location = "group:Tests/MRFoundation Tests/MRFoundation Tests.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Example/MRFoundation OS X Example/MRFoundation OS X Example.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Example/MRFoundation iOS Example/MRFoundation iOS Example.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Example/MRFoundation iOS Example/Pods/Pods.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Example/MRFoundation OS X Example/Pods/Pods.xcodeproj">
+   </FileRef>
+</Workspace>
