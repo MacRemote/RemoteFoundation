@@ -16,6 +16,9 @@
       <FileRef
          location = "group:MRRemoteControlServer.swift">
       </FileRef>
+      <FileRef
+         location = "group:MRUtils.swift">
+      </FileRef>
    </Group>
    <FileRef
       location = "group:Tests/MRFoundation Tests/MRFoundation Tests.xcodeproj">

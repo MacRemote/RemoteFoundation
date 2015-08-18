@@ -11,14 +11,9 @@ import CocoaAsyncSocket
 
 // TODO: Consider about handling disconnection/error
 
-#if TARGET_OS_IPHONE
+#if os(iOS)
 import UIKit
 #endif
-
-enum PacketTag: Int {
-    case Header = 1
-    case Body = 2
-}
 
 // MARK: - Server Delegate Protocol
 
@@ -31,12 +26,7 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
     
     // MARK: - Singleton
     
-    public class var sharedServer: MRRemoteControlServer {
-        struct Static {
-            static let server: MRRemoteControlServer = MRRemoteControlServer()
-        }
-        return Static.server
-    }
+    public static let sharedServer: MRRemoteControlServer = MRRemoteControlServer()
     
     public weak var delegate: MRRemoteControlServerDelegate?
     private var service: NSNetService!
@@ -71,10 +61,18 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
         }
     }
     
-    private func parseHeader(data: NSData) -> UInt {
-        var out: UInt = 0
-        data.getBytes(&out, length: sizeof(UInt))
-        return out
+    public func disconnect() {
+        self.socket.delegate = nil
+        self.socket.disconnect()
+        self.socket = nil
+    }
+    
+    public func stopBroadCasting() {
+        self.service.stop()
+        self.service.delegate = nil
+        self.service = nil
+        
+        self.disconnect()
     }
     
     // MARK: - GCDAsyncSocketDelegate
@@ -82,20 +80,34 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
     public func socket(sock: GCDAsyncSocket!, didAcceptNewSocket newSocket: GCDAsyncSocket!) {
         println("Accepted new socket")
         self.socket = newSocket
-        self.socket.readDataToLength(UInt(sizeof(UInt)), withTimeout: -1.0, tag: PacketTag.Header.rawValue)
+        
+        // Read Header
+        self.socket.readDataToLength(UInt(sizeof(MRHeaderSizeType)), withTimeout: -1.0, tag: MRPacketTag.Header.rawValue)
     }
     
     public func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
         println("Disconnected: error \(err)")
+        
+        if err != nil {
+            self.socket = GCDAsyncSocket(delegate: self, delegateQueue: dispatch_get_main_queue())
+            var error: NSError?
+            if self.socket.acceptOnPort(UInt16(self.service.port), error: &error) {
+                println("Re listen")
+            } else {
+                println("error")
+            }
+        }
     }
     
     public func socket(sock: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int) {
-        println("Read data")
+//        println("Read data")
         
-        if data.length == sizeof(UInt) {
+        if data.length == sizeof(MRHeaderSizeType) {
             // Header
-            let bodyLength: UInt = self.parseHeader(data)
-            sock.readDataToLength(bodyLength, withTimeout: -1, tag: PacketTag.Body.rawValue)
+            let bodyLength: MRHeaderSizeType = parseHeader(data)
+            
+            // Read Body
+            sock.readDataToLength(UInt(bodyLength), withTimeout: -1, tag: MRPacketTag.Body.rawValue)
         } else {
             // Body
             if let body = NSString(data: data, encoding: NSUTF8StringEncoding) {
@@ -110,7 +122,8 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
                 self.delegate?.remoteControlServerDidReceiveEvent?(event)
             }
             
-            sock.readDataToLength(UInt(sizeof(UInt)), withTimeout: -1, tag: PacketTag.Header.rawValue)
+            // Read Header
+            sock.readDataToLength(UInt(sizeof(MRHeaderSizeType)), withTimeout: -1, tag: MRPacketTag.Header.rawValue)
         }
     }
     

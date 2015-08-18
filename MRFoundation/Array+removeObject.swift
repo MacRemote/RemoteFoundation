@@ -1,6 +1,6 @@
 //
 //  Array+removeObject.swift
-//  MacRemote iOS
+//  Remote Foundation
 //
 //  Created by Tom Hu on 6/13/15.
 //  Copyright (c) 2015 Tom Hu. All rights reserved.

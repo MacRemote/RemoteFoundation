@@ -26,8 +26,13 @@ public enum MREventType: Int {
     case KeyUp
     
     // Brightness
-    case BrightnessLighten
-    case BrightnessDarken
+    case BrightnessUp
+    case BrightnessDown
+    
+    // Illumination
+    case IlluminationUp
+    case IlluminationDown
+    case IlluminationToggle
     
     // Zoom
     case ZoomIn

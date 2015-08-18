@@ -19,6 +19,8 @@ import CocoaAsyncSocket
     @objc optional func remoteControlClientWillConnectToService(service: NSNetService, onSocket socket: GCDAsyncSocket)
     @objc optional func remoteControlClientDidConnectToService(service: NSNetService, onSocket socket: GCDAsyncSocket)
     
+    @objc optional func remoteControlClientDidDisonnect()
+    
     @objc optional func remoteControlClientDidSendData(data: NSData, toService service: NSNetService, onSocket socket: GCDAsyncSocket)
     
     @objc optional func remoteControlClientDidReceiveData(data: NSData, fromService service: NSNetService, onSocket socket: GCDAsyncSocket)
@@ -30,12 +32,7 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     
     // MARK: - Singleton
     
-    public class var sharedClient: MRRemoteControlClient {
-        struct Static {
-            static let client: MRRemoteControlClient = MRRemoteControlClient()
-        }
-        return Static.client
-    }
+    public static let sharedClient: MRRemoteControlClient = MRRemoteControlClient()
     
     public weak var delegate: MRRemoteControlClientDelegate?
     private var serviceBrowser: NSNetServiceBrowser!
@@ -63,14 +60,11 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     }
     
     public func stopSearch() {
+        println("Stop search services!")
         if self.serviceBrowser != nil {
             self.serviceBrowser.stop()
             self.serviceBrowser.delegate = nil
             self.serviceBrowser = nil
-            
-            // FIXME: Disconnected
-            self.connectedSocket?.disconnect()
-            self.connectedService = nil
         }
     }
     
@@ -92,7 +86,7 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
             
             // Connect
             while !isConnected && Bool(addresses.count) {
-                let address: NSData = addresses[0] as NSData
+                let address: NSData = addresses[0] as! NSData
                 var error: NSError?
                 
                 if (self.connectedSocket?.connectToAddress(address, error: &error) != nil) {
@@ -100,7 +94,7 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
                     isConnected = true
                 } else if error != nil {
                     // Error handle
-                    println("Unable to connect to address.\nError \(error?) with user info \(error?.userInfo)")
+                    println("Unable to connect to address.\nError \(error) with user info \(error?.userInfo)")
                 }
             }
         }
@@ -108,20 +102,28 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
         return isConnected
     }
     
-    private func parseHeader(data: NSData) -> UInt {
-        var out: UInt = 0
-        data.getBytes(&out, length: sizeof(UInt))
-        return out
+    public func disconnect() {
+        println("Disconnect")
+        self.connectedService?.stop()
+        self.connectedService?.delegate = nil
+        self.connectedService = nil
+        
+        self.connectedSocket?.disconnect()
+        self.connectedSocket?.delegate = nil
+        self.connectedSocket = nil
     }
     
     public func send(data: NSData) {
         println("Sending data to server!")
         
         var header = data.length
-        let headerData = NSData(bytes: &header, length: sizeof(UInt))
+        let headerData = NSData(bytes: &header, length: sizeof(MRHeaderSizeType))
         
-        self.connectedSocket?.writeData(headerData, withTimeout: -1.0, tag: PacketTag.Header.rawValue)
-        self.connectedSocket?.writeData(data, withTimeout: -1.0, tag: PacketTag.Body.rawValue)
+        // Send Header
+        self.connectedSocket?.writeData(headerData, withTimeout: -1.0, tag: MRPacketTag.Header.rawValue)
+        
+        // Send Body
+        self.connectedSocket?.writeData(data, withTimeout: -1.0, tag: MRPacketTag.Body.rawValue)
         
         self.delegate?.remoteControlClientDidSendData?(data, toService: self.connectedService!, onSocket: self.connectedSocket!)
     }
@@ -146,14 +148,6 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     public func netServiceBrowser(aNetServiceBrowser: NSNetServiceBrowser, didRemoveService aNetService: NSNetService, moreComing: Bool) {
         println("Remove a service: \(aNetService.name)")
         
-        // FIXME: Disconnected
-//        if self.connectedService == aNetService {
-//            self.connectedSocket?.disconnect()
-//            self.connectedService = nil
-//            
-//            UIApplication.sharedApplication().keyWindow?.rootViewController?.navigationController?.popToRootViewControllerAnimated(true)
-//        }
-        
         self.services.removeObject(aNetService)
         if !moreComing {
             self.delegate?.remoteControlClientDidChangeServices?(self.services)
@@ -162,13 +156,16 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     
     public func netServiceBrowserDidStopSearch(aNetServiceBrowser: NSNetServiceBrowser) {
         println("Stop search!")
-        
-        self.stopSearch()
     }
     
     public func netServiceBrowser(aNetServiceBrowser: NSNetServiceBrowser, didNotSearch errorDict: [NSObject : AnyObject]) {
-        println("Start search...")
+        println("Search unsuccessfully!")
+        println("Restart searching...")
         
+        // Stop
+        self.stopSearch()
+        
+        // Restart
         self.startSearch()
     }
     
@@ -194,27 +191,39 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
         
         self.delegate?.remoteControlClientDidConnectToService?(self.connectedService!, onSocket: self.connectedSocket!)
         
-        sock.readDataToLength(UInt(sizeof(UInt)), withTimeout: -1.0, tag: PacketTag.Header.rawValue)
+        // Stop search
+        // self.stopSearch()
+        
+        // Read Header
+        sock.readDataToLength(UInt(sizeof(MRHeaderSizeType)), withTimeout: -1.0, tag: MRPacketTag.Header.rawValue)
     }
     
     public func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
         println("Socket did disconnect \(sock), error: \(err)")
+        
+        if err != nil {
+            // Disconnect
+            self.disconnect()
+            
+            // Nofify delegate
+            self.delegate?.remoteControlClientDidDisonnect?()
+        }
     }
     
     public func socket(sock: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int) {
         println("Read data")
         
         if self.connectedSocket == sock {
-            if data.length == sizeof(UInt) {
+            if data.length == sizeof(MRHeaderSizeType) {
                 // Header
-                let bodyLength: UInt = self.parseHeader(data)
+                let bodyLength: MRHeaderSizeType = parseHeader(data)
                 
-                sock.readDataToLength(bodyLength, withTimeout: -1.0, tag: PacketTag.Body.rawValue)
+                sock.readDataToLength(UInt(bodyLength), withTimeout: -1.0, tag: MRPacketTag.Body.rawValue)
             } else {
                 // Body
                 self.delegate?.remoteControlClientDidReceiveData?(data, fromService: self.connectedService!, onSocket: self.connectedSocket!)
                 
-                sock.readDataToLength(UInt(sizeof(UInt)), withTimeout: -1.0, tag: PacketTag.Header.rawValue)
+                sock.readDataToLength(UInt(sizeof(MRHeaderSizeType)), withTimeout: -1.0, tag: MRPacketTag.Header.rawValue)
             }
         }
     }

@@ -14,6 +14,7 @@
 		20221EC11B563A4800D9854E /* MRRemoteControlClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20221EBE1B563A4800D9854E /* MRRemoteControlClient.swift */; };
 		20221EC21B563A4800D9854E /* MRRemoteControlServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20221EBF1B563A4800D9854E /* MRRemoteControlServer.swift */; };
 		20221EC41B56451900D9854E /* Array+removeObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20221EC31B56451900D9854E /* Array+removeObject.swift */; };
+		20D22D651B8315380015D812 /* MRUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D22D641B8315380015D812 /* MRUtils.swift */; };
 		FB20DCBB45526E5B66F4C78C /* Pods_MRFoundation_OS_X_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84C9F60C95BB19454939BB33 /* Pods_MRFoundation_OS_X_Example.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -28,6 +29,7 @@
 		20221EBE1B563A4800D9854E /* MRRemoteControlClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRRemoteControlClient.swift; sourceTree = "<group>"; };
 		20221EBF1B563A4800D9854E /* MRRemoteControlServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRRemoteControlServer.swift; sourceTree = "<group>"; };
 		20221EC31B56451900D9854E /* Array+removeObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+removeObject.swift"; sourceTree = "<group>"; };
+		20D22D641B8315380015D812 /* MRUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRUtils.swift; sourceTree = "<group>"; };
 		60D70D3275CFF278CB04EFD8 /* Pods-MRFoundation OS X Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MRFoundation OS X Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MRFoundation OS X Example/Pods-MRFoundation OS X Example.debug.xcconfig"; sourceTree = "<group>"; };
 		84C9F60C95BB19454939BB33 /* Pods_MRFoundation_OS_X_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MRFoundation_OS_X_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -85,6 +87,7 @@
 		20221EBC1B563A4800D9854E /* MRFoundation */ = {
 			isa = PBXGroup;
 			children = (
+				20D22D641B8315380015D812 /* MRUtils.swift */,
 				20221EC31B56451900D9854E /* Array+removeObject.swift */,
 				20221EBD1B563A4800D9854E /* MREvent.swift */,
 				20221EBE1B563A4800D9854E /* MRRemoteControlClient.swift */,
@@ -231,6 +234,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20D22D651B8315380015D812 /* MRUtils.swift in Sources */,
 				20221E771B5637D600D9854E /* AppDelegate.swift in Sources */,
 				20221EC21B563A4800D9854E /* MRRemoteControlServer.swift in Sources */,
 				20221EC01B563A4800D9854E /* MREvent.swift in Sources */,
