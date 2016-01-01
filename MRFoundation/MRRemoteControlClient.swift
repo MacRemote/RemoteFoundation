@@ -49,7 +49,7 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     }
     
     public func startSearch() {
-        println("Searching services...")
+        print("Searching services...")
         if self.services != nil {
             self.services.removeAll(keepCapacity: true)
         }
@@ -60,7 +60,7 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     }
     
     public func stopSearch() {
-        println("Stop search services!")
+        print("Stop search services!")
         if self.serviceBrowser != nil {
             self.serviceBrowser.stop()
             self.serviceBrowser.delegate = nil
@@ -79,22 +79,25 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
         let addresses: Array = service.addresses!
         
         if let _connected = self.connectedSocket?.isConnected {
-            isConnected = self.connectedSocket!.isConnected
+            isConnected = _connected
         } else {
             // Initialize Socket
             self.connectedSocket = GCDAsyncSocket(delegate: self, delegateQueue: dispatch_get_main_queue())
             
             // Connect
             while !isConnected && Bool(addresses.count) {
-                let address: NSData = addresses[0] as! NSData
-                var error: NSError?
+                let address: NSData = addresses[0]
                 
-                if (self.connectedSocket?.connectToAddress(address, error: &error) != nil) {
-                    self.connectedService = service
-                    isConnected = true
-                } else if error != nil {
+                do {
+                    let ret = try self.connectedSocket?.connectToAddress(address) // ???: 怎么突然没有返回值了
+                    if ret != nil {
+                        self.connectedService = service
+                        isConnected = true
+                    }
+                    
+                } catch let error as NSError {
                     // Error handle
-                    println("Unable to connect to address.\nError \(error) with user info \(error?.userInfo)")
+                    print("Unable to connect to address.\nError \(error) with user info \(error.userInfo)")
                 }
             }
         }
@@ -103,7 +106,7 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     }
     
     public func disconnect() {
-        println("Disconnect")
+        print("Disconnect")
         self.connectedService?.stop()
         self.connectedService?.delegate = nil
         self.connectedService = nil
@@ -114,7 +117,7 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     }
     
     public func send(data: NSData) {
-        println("Sending data to server!")
+        print("Sending data to server!")
         
         var header = data.length
         let headerData = NSData(bytes: &header, length: sizeof(MRHeaderSizeType))
@@ -131,13 +134,13 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     // MARK: - NSNetServiceBrowserDelegate
     
     public func netServiceBrowserWillSearch(aNetServiceBrowser: NSNetServiceBrowser) {
-        println("Will search service")
+        print("Will search service")
     }
     
     public func netServiceBrowser(aNetServiceBrowser: NSNetServiceBrowser, didFindService aNetService: NSNetService, moreComing: Bool) {
-        println("Find a service: \(aNetService.name)")
-        println("Port: \(aNetService.port)")
-        println("Domain: \(aNetService.domain)")
+        print("Find a service: \(aNetService.name)")
+        print("Port: \(aNetService.port)")
+        print("Domain: \(aNetService.domain)")
         
         self.services.append(aNetService)
         if !moreComing {
@@ -146,7 +149,7 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     }
     
     public func netServiceBrowser(aNetServiceBrowser: NSNetServiceBrowser, didRemoveService aNetService: NSNetService, moreComing: Bool) {
-        println("Remove a service: \(aNetService.name)")
+        print("Remove a service: \(aNetService.name)")
         
         self.services.removeObject(aNetService)
         if !moreComing {
@@ -155,12 +158,12 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     }
     
     public func netServiceBrowserDidStopSearch(aNetServiceBrowser: NSNetServiceBrowser) {
-        println("Stop search!")
+        print("Stop search!")
     }
     
-    public func netServiceBrowser(aNetServiceBrowser: NSNetServiceBrowser, didNotSearch errorDict: [NSObject : AnyObject]) {
-        println("Search unsuccessfully!")
-        println("Restart searching...")
+    public func netServiceBrowser(aNetServiceBrowser: NSNetServiceBrowser, didNotSearch errorDict: [String : NSNumber]) {
+        print("Search unsuccessfully!")
+        print("Restart searching...")
         
         // Stop
         self.stopSearch()
@@ -172,22 +175,22 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     // MARK: - NSNetServiceDelegate
     
     public func netServiceDidResolveAddress(sender: NSNetService) {
-        println("Did resolve address: \(sender.addresses)")
+        print("Did resolve address: \(sender.addresses)")
         
         if self.connectToServerWithService(sender) {
-            println("Connecting to \(sender.name)")
+            print("Connecting to \(sender.name)")
         }
     }
     
-    public func netService(sender: NSNetService, didNotResolve errorDict: [NSObject : AnyObject]) {
-        println("Did not resolve.\n Error: \(errorDict)")
+    public func netService(sender: NSNetService, didNotResolve errorDict: [String : NSNumber]) {
+        print("Did not resolve.\n Error: \(errorDict)")
     }
     
     // MARK: - GCDAsyncSocketDelegate
     
     public func socket(sock: GCDAsyncSocket!, didConnectToHost host: String!, port: UInt16) {
-        println("Connected to host: \(host)")
-        println("Port: \(port)")
+        print("Connected to host: \(host)")
+        print("Port: \(port)")
         
         self.delegate?.remoteControlClientDidConnectToService?(self.connectedService!, onSocket: self.connectedSocket!)
         
@@ -199,7 +202,7 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     }
     
     public func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
-        println("Socket did disconnect \(sock), error: \(err)")
+        print("Socket did disconnect \(sock), error: \(err)")
         
         if err != nil {
             // Disconnect
@@ -211,7 +214,7 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     }
     
     public func socket(sock: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int) {
-        println("Read data")
+        print("Read data")
         
         if self.connectedSocket == sock {
             if data.length == sizeof(MRHeaderSizeType) {
@@ -229,7 +232,7 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     }
     
     public func socketDidCloseReadStream(sock: GCDAsyncSocket!) {
-        println("Closed read stream.")
+        print("Closed read stream.")
     }
     
 }

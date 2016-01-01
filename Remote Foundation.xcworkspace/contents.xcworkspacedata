@@ -23,16 +23,4 @@
    <FileRef
       location = "group:Tests/MRFoundation Tests/MRFoundation Tests.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:Example/MRFoundation OS X Example/MRFoundation OS X Example.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Example/MRFoundation iOS Example/MRFoundation iOS Example.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Example/MRFoundation iOS Example/Pods/Pods.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Example/MRFoundation OS X Example/Pods/Pods.xcodeproj">
-   </FileRef>
 </Workspace>

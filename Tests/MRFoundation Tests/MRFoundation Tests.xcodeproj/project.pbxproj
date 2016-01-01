@@ -133,6 +133,7 @@
 		20221E921B5638FF00D9854E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0710;
 				LastUpgradeCheck = 0610;
 				TargetAttributes = {
 					20221E9B1B56398500D9854E = {
@@ -409,6 +410,7 @@
 				20221EA51B56398500D9854E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		20221EB01B56399D00D9854E /* Build configuration list for PBXNativeTarget "OS X Tests" */ = {
 			isa = XCConfigurationList;
@@ -417,6 +419,7 @@
 				20221EB21B56399D00D9854E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

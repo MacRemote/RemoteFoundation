@@ -40,9 +40,8 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
     
     public func startBroadCasting() {
         self.socket = GCDAsyncSocket(delegate: self, delegateQueue: dispatch_get_main_queue())
-        
-        var error: NSError?
-        if self.socket.acceptOnPort(0, error: &error) {
+        do {
+            try self.socket.acceptOnPort(0)
             var deviceName: String = "Default Name"
             
             #if os(iOS)
@@ -56,8 +55,8 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
             self.service = NSNetService(domain: "local.", type: "_macremote._tcp.", name: deviceName, port: Int32(self.socket.localPort))
             self.service.delegate = self
             self.service.publish()
-        } else {
-            println("Unable to create socket. Error \(error)")
+        } catch let error as NSError {
+            print("Unable to create socket. Error \(error)")
         }
     }
     
@@ -78,7 +77,7 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
     // MARK: - GCDAsyncSocketDelegate
     
     public func socket(sock: GCDAsyncSocket!, didAcceptNewSocket newSocket: GCDAsyncSocket!) {
-        println("Accepted new socket")
+        print("Accepted new socket")
         self.socket = newSocket
         
         // Read Header
@@ -86,15 +85,15 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
     }
     
     public func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
-        println("Disconnected: error \(err)")
+        print("Disconnected: error \(err)")
         
         if err != nil {
             self.socket = GCDAsyncSocket(delegate: self, delegateQueue: dispatch_get_main_queue())
-            var error: NSError?
-            if self.socket.acceptOnPort(UInt16(self.service.port), error: &error) {
-                println("Re listen")
-            } else {
-                println("error")
+            do {
+                try self.socket.acceptOnPort(UInt16(self.service.port))
+                print("Re listen")
+            } catch let error as NSError {
+                print("Error: \(error)")
             }
         }
     }
@@ -111,12 +110,12 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
         } else {
             // Body
             if let body = NSString(data: data, encoding: NSUTF8StringEncoding) {
-                println("Body: \(body)")
+                print("Body: \(body)")
                 
                 // Handle ios notification
                 
             } else if let event = MREvent(data: data) {
-                println("Event: \(event)")
+                print("Event: \(event)")
                 
                 // Handle event
                 self.delegate?.remoteControlServerDidReceiveEvent?(event)
@@ -128,53 +127,53 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
     }
     
     public func socket(sock: GCDAsyncSocket!, didWriteDataWithTag tag: Int) {
-        println("Wrote data with tag: \(tag)")
+        print("Wrote data with tag: \(tag)")
     }
     
     // MARK: NSNetServiceDelegate
     
     public func netServiceWillPublish(sender: NSNetService) {
-        println("Net Service Will Publish!")
+        print("Net Service Will Publish!")
     }
     
     public func netServiceDidPublish(sender: NSNetService) {
-        println("Net Service Did Publish!")
-        println("Service Name: \(sender.name)")
-        println("Port: \(sender.port)")
+        print("Net Service Did Publish!")
+        print("Service Name: \(sender.name)")
+        print("Port: \(sender.port)")
     }
     
-    public func netService(sender: NSNetService, didNotPublish errorDict: [NSObject : AnyObject]) {
-        println("Net Service Did Not Publish!")
-        println("Error: \(errorDict)")
+    public func netService(sender: NSNetService, didNotPublish errorDict: [String : NSNumber]) {
+        print("Net Service Did Not Publish!")
+        print("Error: \(errorDict)")
     }
     
     public func netServiceWillResolve(sender: NSNetService) {
-        println("Net Service Will Resolve!")
+        print("Net Service Will Resolve!")
     }
     
     public func netServiceDidResolveAddress(sender: NSNetService) {
-        println("Net Service Did Resolve Address!")
-        println("Sender: \(sender)")
+        print("Net Service Did Resolve Address!")
+        print("Sender: \(sender)")
     }
     
-    public func netService(sender: NSNetService, didNotResolve errorDict: [NSObject : AnyObject]) {
-        println("Net Service Did Not Resolve!")
-        println("Error: \(errorDict)")
+    public func netService(sender: NSNetService, didNotResolve errorDict: [String : NSNumber]) {
+        print("Net Service Did Not Resolve!")
+        print("Error: \(errorDict)")
     }
     
     public func netServiceDidStop(sender: NSNetService) {
-        println("Net Service Did Stop!")
+        print("Net Service Did Stop!")
     }
     
     public func netService(sender: NSNetService, didUpdateTXTRecordData data: NSData) {
-        println("Net Service Did Update TXT Record Data!")
-        println("Data: \(data)")
+        print("Net Service Did Update TXT Record Data!")
+        print("Data: \(data)")
     }
     
     public func netService(sender: NSNetService, didAcceptConnectionWithInputStream inputStream: NSInputStream, outputStream: NSOutputStream) {
-        println("Net Service Did Accept Connection With Input Stream!")
-        println("Input Stream: \(inputStream)")
-        println("Output Stream: \(outputStream)")
+        print("Net Service Did Accept Connection With Input Stream!")
+        print("Input Stream: \(inputStream)")
+        print("Output Stream: \(outputStream)")
     }
     
 }

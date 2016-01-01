@@ -39,7 +39,7 @@ public enum MREventType: Int {
     case ZoomOut
 }
 
-public class MREvent: NSObject, NSCoding, NSSecureCoding, Printable {
+public class MREvent: NSObject, NSCoding, NSSecureCoding {
     
     public var eventType: MREventType!
     public var message: String! = ""
@@ -68,7 +68,7 @@ public class MREvent: NSObject, NSCoding, NSSecureCoding, Printable {
     
     // MARK: - NSCoding
     
-    public required convenience init(coder aDecoder: NSCoder) {
+    public required convenience init?(coder aDecoder: NSCoder) {
         self.init()
         
         self.eventType = MREventType(rawValue: aDecoder.decodeIntegerForKey("eventType"))
