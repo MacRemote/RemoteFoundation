@@ -27,10 +27,14 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
     // MARK: - Singleton
     
     public static let sharedServer: MRRemoteControlServer = MRRemoteControlServer()
-    
+
+    // MARK: - Delegate
+
     public weak var delegate: MRRemoteControlServerDelegate?
-    private var service: NSNetService!
-    private var socket: GCDAsyncSocket!
+
+    // MARK: - Member Variables
+    private(set) var service: NSNetService!
+    private(set) var socket: GCDAsyncSocket!
     
     // MARK: - Life Circle
 
@@ -86,7 +90,7 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
     
     public func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
         print("Disconnected: error \(err)")
-        
+
         if err != nil {
             self.socket = GCDAsyncSocket(delegate: self, delegateQueue: dispatch_get_main_queue())
             do {

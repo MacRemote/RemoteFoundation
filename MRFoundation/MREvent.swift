@@ -13,27 +13,27 @@ public enum MREventType: Int {
     case SoundUp
     case SoundDown
     case SoundMute
-    
+
     // Mouse
     case LeftMouseDown
     case LeftMouseUp
     case RightMouseDown
     case RightMouseUp
     case MouseClick
-    
+
     // Keyboard
     case KeyDown
     case KeyUp
-    
+
     // Brightness
     case BrightnessUp
     case BrightnessDown
-    
+
     // Illumination
     case IlluminationUp
     case IlluminationDown
     case IlluminationToggle
-    
+
     // Zoom
     case ZoomIn
     case ZoomOut

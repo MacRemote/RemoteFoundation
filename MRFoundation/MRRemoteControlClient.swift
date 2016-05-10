@@ -15,14 +15,14 @@ import CocoaAsyncSocket
 
 @objc public protocol MRRemoteControlClientDelegate {
     @objc optional func remoteControlClientDidChangeServices(services: Array<NSNetService>)
-    
+
     @objc optional func remoteControlClientWillConnectToService(service: NSNetService, onSocket socket: GCDAsyncSocket)
     @objc optional func remoteControlClientDidConnectToService(service: NSNetService, onSocket socket: GCDAsyncSocket)
-    
+
     @objc optional func remoteControlClientDidDisonnect()
-    
+
     @objc optional func remoteControlClientDidSendData(data: NSData, toService service: NSNetService, onSocket socket: GCDAsyncSocket)
-    
+
     @objc optional func remoteControlClientDidReceiveData(data: NSData, fromService service: NSNetService, onSocket socket: GCDAsyncSocket)
 }
 
@@ -34,7 +34,12 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     
     public static let sharedClient: MRRemoteControlClient = MRRemoteControlClient()
     
+    // MARK: - Delegate
+
     public weak var delegate: MRRemoteControlClientDelegate?
+
+    // MARK: Member Variables
+
     private var serviceBrowser: NSNetServiceBrowser!
     private(set) var connectedService: NSNetService?
     private(set) var services: Array<NSNetService>!
@@ -87,7 +92,7 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
             // Connect
             while !isConnected && Bool(addresses.count) {
                 let address: NSData = addresses[0]
-                
+
                 do {
                     let ret = try self.connectedSocket?.connectToAddress(address) // ???: 怎么突然没有返回值了
                     if ret != nil {

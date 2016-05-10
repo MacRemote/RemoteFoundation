@@ -9,6 +9,16 @@
 /* Begin PBXBuildFile section */
 		20221EA21B56398500D9854E /* iOS_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20221EA11B56398500D9854E /* iOS_Tests.swift */; };
 		20221EAF1B56399D00D9854E /* OS_X_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20221EAE1B56399D00D9854E /* OS_X_Tests.swift */; };
+		20D9D4891CE1D1E80042B2CA /* Array+removeObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D9D4841CE1D1E80042B2CA /* Array+removeObject.swift */; };
+		20D9D48A1CE1D1E80042B2CA /* MREvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D9D4851CE1D1E80042B2CA /* MREvent.swift */; };
+		20D9D48B1CE1D1E80042B2CA /* MRRemoteControlClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D9D4861CE1D1E80042B2CA /* MRRemoteControlClient.swift */; };
+		20D9D48C1CE1D1E80042B2CA /* MRRemoteControlServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D9D4871CE1D1E80042B2CA /* MRRemoteControlServer.swift */; };
+		20D9D48D1CE1D1E80042B2CA /* MRUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D9D4881CE1D1E80042B2CA /* MRUtils.swift */; };
+		20D9D48E1CE1D26F0042B2CA /* Array+removeObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D9D4841CE1D1E80042B2CA /* Array+removeObject.swift */; };
+		20D9D48F1CE1D26F0042B2CA /* MREvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D9D4851CE1D1E80042B2CA /* MREvent.swift */; };
+		20D9D4901CE1D26F0042B2CA /* MRRemoteControlClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D9D4861CE1D1E80042B2CA /* MRRemoteControlClient.swift */; };
+		20D9D4911CE1D26F0042B2CA /* MRRemoteControlServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D9D4871CE1D1E80042B2CA /* MRRemoteControlServer.swift */; };
+		20D9D4921CE1D26F0042B2CA /* MRUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D9D4881CE1D1E80042B2CA /* MRUtils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -18,6 +28,11 @@
 		20221EAA1B56399D00D9854E /* OS X Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "OS X Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		20221EAD1B56399D00D9854E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		20221EAE1B56399D00D9854E /* OS_X_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OS_X_Tests.swift; sourceTree = "<group>"; };
+		20D9D4841CE1D1E80042B2CA /* Array+removeObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+removeObject.swift"; sourceTree = "<group>"; };
+		20D9D4851CE1D1E80042B2CA /* MREvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MREvent.swift; sourceTree = "<group>"; };
+		20D9D4861CE1D1E80042B2CA /* MRRemoteControlClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRRemoteControlClient.swift; sourceTree = "<group>"; };
+		20D9D4871CE1D1E80042B2CA /* MRRemoteControlServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRRemoteControlServer.swift; sourceTree = "<group>"; };
+		20D9D4881CE1D1E80042B2CA /* MRUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MRUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +56,7 @@
 		20221E911B5638FF00D9854E = {
 			isa = PBXGroup;
 			children = (
+				20D9D4831CE1D1E80042B2CA /* MRFoundation */,
 				20221E9E1B56398500D9854E /* iOS Tests */,
 				20221EAB1B56399D00D9854E /* OS X Tests */,
 				20221E9D1B56398500D9854E /* Products */,
@@ -88,6 +104,19 @@
 				20221EAD1B56399D00D9854E /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		20D9D4831CE1D1E80042B2CA /* MRFoundation */ = {
+			isa = PBXGroup;
+			children = (
+				20D9D4841CE1D1E80042B2CA /* Array+removeObject.swift */,
+				20D9D4851CE1D1E80042B2CA /* MREvent.swift */,
+				20D9D4861CE1D1E80042B2CA /* MRRemoteControlClient.swift */,
+				20D9D4871CE1D1E80042B2CA /* MRRemoteControlServer.swift */,
+				20D9D4881CE1D1E80042B2CA /* MRUtils.swift */,
+			);
+			name = MRFoundation;
+			path = ../../MRFoundation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -184,6 +213,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20D9D48D1CE1D1E80042B2CA /* MRUtils.swift in Sources */,
+				20D9D48C1CE1D1E80042B2CA /* MRRemoteControlServer.swift in Sources */,
+				20D9D48A1CE1D1E80042B2CA /* MREvent.swift in Sources */,
+				20D9D48B1CE1D1E80042B2CA /* MRRemoteControlClient.swift in Sources */,
+				20D9D4891CE1D1E80042B2CA /* Array+removeObject.swift in Sources */,
 				20221EA21B56398500D9854E /* iOS_Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -192,6 +226,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20D9D48E1CE1D26F0042B2CA /* Array+removeObject.swift in Sources */,
+				20D9D48F1CE1D26F0042B2CA /* MREvent.swift in Sources */,
+				20D9D4901CE1D26F0042B2CA /* MRRemoteControlClient.swift in Sources */,
+				20D9D4911CE1D26F0042B2CA /* MRRemoteControlServer.swift in Sources */,
+				20D9D4921CE1D26F0042B2CA /* MRUtils.swift in Sources */,
 				20221EAF1B56399D00D9854E /* OS_X_Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
