@@ -31,9 +31,9 @@ import CocoaAsyncSocket
 public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNetServiceDelegate, GCDAsyncSocketDelegate {
     
     // MARK: - Singleton
-    
+
     public static let sharedClient: MRRemoteControlClient = MRRemoteControlClient()
-    
+
     // MARK: - Delegate
 
     public weak var delegate: MRRemoteControlClientDelegate?
@@ -48,9 +48,18 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
     // MARK: - Life Circle
     
     private override init() {
+        print("Client init")
+
         super.init()
         
         self.services = []
+    }
+    
+    deinit {
+        print("Client deinit")
+        
+        stopSearch()
+        disconnect()
     }
     
     public func startSearch() {

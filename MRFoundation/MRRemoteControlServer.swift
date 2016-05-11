@@ -39,9 +39,17 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
     // MARK: - Life Circle
 
     private override init() {
+        print("Server init")
         super.init()
     }
     
+    deinit {
+        print("Server deinit")
+        
+        stopBroadCasting()
+        disconnect()
+    }
+
     public func startBroadCasting() {
         self.socket = GCDAsyncSocket(delegate: self, delegateQueue: dispatch_get_main_queue())
         do {
@@ -63,13 +71,13 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
             print("Unable to create socket. Error \(error)")
         }
     }
-    
+
     public func disconnect() {
-        self.socket.delegate = nil
         self.socket.disconnect()
+        self.socket.delegate = nil
         self.socket = nil
     }
-    
+
     public func stopBroadCasting() {
         self.service.stop()
         self.service.delegate = nil
