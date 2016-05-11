@@ -50,27 +50,31 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
             var deviceName: String = "Default Name"
 
             #if os(iOS)
-                deviceName = UIDevice.currentDevice().name
+            deviceName = UIDevice.currentDevice().name
             #elseif os(OSX)
-                if let name = NSHost.currentHost().name {
-                    deviceName = name
-                }
+            if let name = NSHost.currentHost().name {
+                deviceName = name
+            }
             #endif
 
-            self.service = NSNetService(domain: "local.", type: "_macremote._tcp.", name: deviceName, port: Int32(self.socket.localPort))
+            self.service = NSNetService(domain: "", type: "_macremote._tcp.", name: "", port: Int32(self.socket.localPort))
+            if #available(iOS 7.0, OSX 10.10, *) {
+                print("includes peer to peer")
+                self.service.includesPeerToPeer = true
+            }
             self.service.delegate = self
             self.service.publish()
         } catch let error as NSError {
             print("Unable to create socket. Error \(error)")
         }
     }
-    
+
     public func disconnect() {
         self.socket.delegate = nil
         self.socket.disconnect()
         self.socket = nil
     }
-    
+
     public func stopBroadCasting() {
         self.service.stop()
         self.service.delegate = nil
@@ -78,7 +82,7 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
         
         self.disconnect()
     }
-    
+
     // MARK: - GCDAsyncSocketDelegate
     
     public func socket(sock: GCDAsyncSocket!, didAcceptNewSocket newSocket: GCDAsyncSocket!) {
