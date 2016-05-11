@@ -33,6 +33,7 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
     public weak var delegate: MRRemoteControlServerDelegate?
 
     // MARK: - Member Variables
+
     private(set) var service: NSNetService!
     private(set) var socket: GCDAsyncSocket!
     
@@ -41,13 +42,13 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
     private override init() {
         super.init()
     }
-    
-    public func startBroadCasting() {
+
+    public func startBroadCasting(port aPort: UInt16 = 0) {
         self.socket = GCDAsyncSocket(delegate: self, delegateQueue: dispatch_get_main_queue())
         do {
-            try self.socket.acceptOnPort(0)
+            try self.socket.acceptOnPort(aPort)
             var deviceName: String = "Default Name"
-            
+
             #if os(iOS)
                 deviceName = UIDevice.currentDevice().name
             #elseif os(OSX)
@@ -55,7 +56,7 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
                     deviceName = name
                 }
             #endif
-            
+
             self.service = NSNetService(domain: "local.", type: "_macremote._tcp.", name: deviceName, port: Int32(self.socket.localPort))
             self.service.delegate = self
             self.service.publish()
