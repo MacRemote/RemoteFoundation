@@ -50,21 +50,25 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
         disconnect()
     }
 
-    public func startBroadCasting() {
+    public func startBroadCasting(port aPort: UInt16 = 0) {
         self.socket = GCDAsyncSocket(delegate: self, delegateQueue: dispatch_get_main_queue())
         do {
-            try self.socket.acceptOnPort(0)
+            try self.socket.acceptOnPort(aPort)
             var deviceName: String = "Default Name"
-            
+
             #if os(iOS)
-                deviceName = UIDevice.currentDevice().name
+            deviceName = UIDevice.currentDevice().name
             #elseif os(OSX)
-                if let name = NSHost.currentHost().name {
-                    deviceName = name
-                }
+            if let name = NSHost.currentHost().name {
+                deviceName = name
+            }
             #endif
-            
-            self.service = NSNetService(domain: "local.", type: "_macremote._tcp.", name: deviceName, port: Int32(self.socket.localPort))
+
+            self.service = NSNetService(domain: "", type: "_macremote._tcp.", name: "", port: Int32(self.socket.localPort))
+            if #available(iOS 7.0, OSX 10.10, *) {
+                print("includes peer to peer")
+                self.service.includesPeerToPeer = true
+            }
             self.service.delegate = self
             self.service.publish()
         } catch let error as NSError {
@@ -85,7 +89,7 @@ public class MRRemoteControlServer: NSObject, NSNetServiceDelegate, GCDAsyncSock
         
         self.disconnect()
     }
-    
+
     // MARK: - GCDAsyncSocketDelegate
     
     public func socket(sock: GCDAsyncSocket!, didAcceptNewSocket newSocket: GCDAsyncSocket!) {

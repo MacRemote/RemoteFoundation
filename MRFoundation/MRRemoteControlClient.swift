@@ -67,10 +67,14 @@ public class MRRemoteControlClient: NSObject, NSNetServiceBrowserDelegate, NSNet
         if self.services != nil {
             self.services.removeAll(keepCapacity: true)
         }
-        
+
         self.serviceBrowser = NSNetServiceBrowser()
+        if #available(iOS 7.0, OSX 10.10, *) {
+            print("includes peer to peer")
+            self.serviceBrowser.includesPeerToPeer = true
+        }
         self.serviceBrowser.delegate = self
-        self.serviceBrowser.searchForServicesOfType("_macremote._tcp.", inDomain: "local.")
+        self.serviceBrowser.searchForServicesOfType("_macremote._tcp.", inDomain: "")
     }
     
     public func stopSearch() {
