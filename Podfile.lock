@@ -1,0 +1,25 @@
+PODS:
+  - CocoaAsyncSocket (7.4.3):
+    - CocoaAsyncSocket/All (= 7.4.3)
+  - CocoaAsyncSocket/All (7.4.3):
+    - CocoaAsyncSocket/GCD
+    - CocoaAsyncSocket/RunLoop
+  - CocoaAsyncSocket/GCD (7.4.3)
+  - CocoaAsyncSocket/RunLoop (7.4.3)
+  - MRFoundation (0.1):
+    - CocoaAsyncSocket (~> 7.0)
+
+DEPENDENCIES:
+  - MRFoundation (from `.`)
+
+EXTERNAL SOURCES:
+  MRFoundation:
+    :path: "."
+
+SPEC CHECKSUMS:
+  CocoaAsyncSocket: a18c75dca4b08723628a0bacca6e94803d90be91
+  MRFoundation: 38068d8a4ecb318be7949a8e30666a2f1b4cd3a5
+
+PODFILE CHECKSUM: f8b5f792f8385cce19229a3994140d3e21505d89
+
+COCOAPODS: 1.0.0
